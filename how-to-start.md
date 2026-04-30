@@ -650,322 +650,141 @@ Dapatkan dari @BotFather di Telegram.
 
 ---
 
-## 🤖 BotGuardian - Anti-Crash System
+## 🧠 AI Multi-Provider Analysis
 
-BotGuardian adalah sistem monitoring yang memastikan bot tidak pernah crash dan auto-restart jika terjadi error.
+QuantumEdge supports multiple AI providers for analysis. The system automatically uses the first available provider in this order: OpenRouter (free models) → Ollama → OpenAI → Claude → Gemini.
 
-### Fitur:
-- ✅ Auto restart on crash
-- ✅ Memory leak detection
-- ✅ CPU overheating protection
-- ✅ Disk space monitoring
-- ✅ Auto backup sebelum restart
-- ✅ Auto Git sync
+### FREE Providers (Recommended):
+| Provider | Free Models | Setup |
+|----------|-------------|-------|
+| **OpenRouter** | llama-3.2-3b, mistral-7b, etc | API key from openrouter.ai |
+| **Ollama** | llama3.2, qwen, mistral (100% local) | Install from ollama.ai |
+| **KiloCode** | Free tier | API key |
+| **OpenCode** | Free tier | API key |
 
-### Start dengan Guardian:
+### PAID Providers:
+| Provider | Model | Setup |
+|----------|-------|-------|
+| OpenAI | GPT-4, GPT-3.5 | API key |
+| Claude | Claude-3 | API key |
+| Gemini | Gemini-2.0 | API key |
+| NVIDIA AI | Mixtral, Llama | API key |
+
+### Quick Setup:
 ```bash
-./start_quantum_edge.sh --guardian
-# atau
-python3 user_data/bot_guardian.py
+# Install
+./install.sh
+
+# Or manually set API keys
+export OPENROUTER_API_KEY="sk-..."
+export OPENAI_API_KEY="sk-..."
 ```
 
-### Monitoring:
-```bash
-# Lihat logs
-tail -f user_data/logs/freqtrade.log
-
-# Check system health
-python3 -c "from user_data.system_monitor import SystemMonitor; print(SystemMonitor().format_health_report())"
+### AI Telegram Commands:
 ```
-
-### Health Check Thresholds:
-| Metric | Threshold | Action |
-|--------|-----------|--------|
-| Memory | >85% | Alert |
-| CPU | >95% | Alert |
-| Disk | >85% | Alert |
-| Disk Free | <2GB | Emergency backup |
-
----
-
-## 🧠 AI Analysis (Ollama - FREE)
-
-AI analysis menggunakan Ollama - 100% gratis, runs local, no API keys needed.
-
-### Install Ollama:
-```bash
-# Linux/Mac
-curl -fsSL https://ollama.ai/install.sh | sh
-
-# Windows: Download dari https://ollama.ai
-```
-
-### Install Model:
-```bash
-ollama pull llama3.2
-# atau model lain yang tersedia:
-ollama pull qwen3.5:2b
-ollama pull mistral
-```
-
-### Set Environment:
-```bash
-export OLLAMA_MODEL=llama3.2
-```
-
-### Telegram AI Commands:
-```
-/ai_analyze BTC/USDT  - AI analysis of pair
-/ai_signal BTC/USDT   - AI trading signal
-/ai_report           - Daily market report
-/ai_learn RSI         - Learn about indicator
+/ai_analyze BTC/USDT [timeframe]  - Full AI analysis
+/ai_signal BTC/USDT               - Quick signal
+/ai_status                        - Show provider status
+/ai_set [provider]                - Switch provider
+/ai_report                        - Market report
 ```
 
 ### Example Response:
 ```
-🧠 AI ANALYSIS: BTC/USDT
+🧠 AI ANALYSIS: BTC/USDT (1h)
 
-Trend: 🟢 Bullish (EMA crossover)
-Support: $49,200
-Resistance: $51,500
+Trend: 🟢 Bullish
+Support: $49,200 | Resistance: $51,500
 
-Recommendation: 🟢 BUY
-- RSI oversold at 38
-- MACD bullish crossover
-- Volume increasing
+Signal: 🟢 BUY (75% confidence)
+RSI oversold at 38, MACD bullish crossover
 
 Risk: Medium
-Timeframe: 1H for entry
-
-🤖 Model: llama3.2
+🤖 OpenRouter (llama-3.2-3b-instruct)
 ⏰ 14:30:00
 ```
 
 ---
 
-## 📊 System Health Monitoring
+## 📊 Auto Alert System
 
-Monitor sistem via Telegram untuk ensure bot runs smooth.
+Automatically monitors pairs and sends alerts when signals are detected.
 
-### Telegram Commands:
+### Setup:
+```bash
+# Start with auto-alert
+python3 user_data/auto_alert.py
+
+# With custom settings
+python3 user_data/auto_alert.py --timeframes 15m 1h 4h --confidence 70
 ```
-/health        - System health status
-/performance   - Trading performance
-/alerts        - Recent system alerts
+
+### Alert Settings (in config.json):
+```json
+{
+  "auto_alert": {
+    "enabled": true,
+    "timeframes": ["15m", "1h", "4h"],
+    "min_confidence": 60,
+    "alert_cooldown_minutes": 15
+  }
+}
 ```
 
-### Health Report Example:
+### Alert Commands:
 ```
-🔧 SYSTEM HEALTH
-
-⏱️ Uptime: 2h 15m
-🧠 Memory: 🟢██░░░░░░░░ 26.0%
-💻 CPU: 🟢░░░░░░░░░░ 4.8%
-💾 Disk: 🟢███░░░░░░░ 31.4%
-
-📊 PROCESS INFO
-Memory: 17.4 MB
-Threads: 3
-
-🖥️ SYSTEM
-CPU Cores: 12
-Total RAM: 31.3 GB
-Free Disk: 662.5 GB
+/alerts  - Show recent alerts
+/health  - System health
 ```
 
 ---
 
-## 💾 Git Auto-Sync
+## 🚀 Auto Install Script
 
-Auto backup konfigurasi dan strategies ke GitHub.
+Interactive installer with setup wizard:
 
-### Setup Git Token:
 ```bash
-export GIT_TOKEN="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"
+# Run installer
+./install.sh
+
+# Minimal install (no prompts)
+./install.sh --minimal
+
+# Update existing
+./install.sh --update
 ```
 
-### Telegram Commands:
-```
-/backup   - Push semua perubahan ke GitHub
-/sync     - Pull terbaru dari GitHub
-```
-
-### Auto-Backup:
-BotGuardian auto backup setiap:
-- Sebelum restart
-- Setiap 6 jam
-- Jika disk space low
-
-### Git Repo:
-https://github.com/SecretArrow/freqtrade
+### Installer Features:
+- System requirements check
+- Virtual environment setup
+- AI provider configuration
+- Bot configuration wizard
+- Historical data download
+- Git sync
 
 ---
 
-## 🚀 New Telegram Commands
+## Quick Start
 
-### Quick Commands:
-```
-/quick_profit   - Quick profit summary
-/health         - System health
-/performance    - Trading stats
-/alerts         - System alerts
-```
-
-### AI Commands:
-```
-/ai_analyze [pair]   - Analyze with AI
-/ai_signal [pair]    - Get AI signal
-/ai_report          - Daily report
-/ai_learn [ind]     - Learn indicator
-```
-
-### Git Commands:
-```
-/backup    - Backup to GitHub
-/sync      - Sync from GitHub
-```
-
-### Guardian:
-```
-/restart_guardian   - Restart dengan protection
-```
-
-### Enhanced Commands:
-```
-/setshort on/off    - Alternative short toggle
-/profit             - Full profit report
-/quick_profit       - Quick summary
-/health             - System + bot health
-```
-
----
-
-## 📁 File Structure (Updated)
-
-```
-/home/testnet-warden/freqtrade/
-├── user_data/
-│   ├── strategies/
-│   │   ├── FreqAIQuantumEdge.py      # ML strategy
-│   │   ├── QuantumEdge_Pro.py         # Pro strategy
-│   │   ├── QuantumEdge_15m.py         # 15m scalping
-│   │   ├── QuantumEdge_Futures.py     # Futures strategy
-│   │   └── QuantumEdge_Adaptive.py    # 1h trend following
-│   ├── config.json                    # Main config
-│   ├── bot_guardian.py               # Anti-crash system
-│   ├── ollama_analyzer.py            # Free AI analysis
-│   ├── system_monitor.py             # Health monitoring
-│   ├── telegram_control.py           # Full Telegram control
-│   └── data/
-│       └── binance/                  # Historical data
-├── start_quantum_edge.sh            # Startup script
-├── how-to-start.md                   # Dokumentasi
-└── requirements.txt
-```
-
----
-
-## 🎯 Quick Start Guide
-
-### 1. First Time Setup:
 ```bash
-# Install dependencies
-pip install psutil requests -q
+# 1. Clone/Update
+git clone https://github.com/SecretArrow/freqtrade.git
+cd freqtrade
 
-# Setup git
-git config user.email "bot@freqtrade.local"
-git config user.name "QuantumEdge Bot"
+# 2. Install
+./install.sh
 
-# Test run
-./start_quantum_edge.sh --dry-run
-```
+# 3. Start
+source .venv/bin/activate
+python3 -m freqtrade trade --config user_data/config.json
 
-### 2. Daily Usage:
-```bash
-# Start with protection (recommended)
-./start_quantum_edge.sh --guardian --dry-run
-
-# Or regular start
-./start_quantum_edge.sh --dry-run
-
-# Check logs
-tail -f user_data/logs/freqtrade.log
-```
-
-### 3. Telegram Commands:
-```
-/start              - Start bot
-/health             - Check system
-/ai_analyze BTC/USDT - AI analysis
-/backup             - Backup to GitHub
-```
-
-### 4. Emergency:
-```
-/stop              - Stop bot
-/restart          - Restart bot
-/restart_guardian  - Restart with guardian
-```
-
----
-
-## 🔧 Troubleshooting
-
-### Bot tidak mau start:
-```bash
-# Check config
-cat user_data/config.json | python3 -m json.tool
-
-# Check logs
-tail -50 user_data/logs/freqtrade.log
-```
-
-### Ollama not available:
-```bash
-# Check Ollama running
-curl http://localhost:11434/api/tags
-
-# Install model
-ollama pull llama3.2
-
-# Set model
-export OLLAMA_MODEL=llama3.2
-```
-
-### Git push failed:
-```bash
-# Set token
-export GIT_TOKEN="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"
-
-# Manual push
-cd /home/testnet-warden/freqtrade
-git add -A
-git commit -m "backup"
-git push origin main
-```
-
-### Memory high:
-```bash
-# Check memory
-free -h
-
-# Restart if needed
+# Or with protection
 ./start_quantum_edge.sh --guardian
 ```
 
 ---
 
-## ⚠️ Important Notes
-
-1. **Always use --guardian for production** - ensures auto-restart
-2. **Test with --dry-run first** - sebelum live trading
-3. **Regular backups** - Gunakan /backup command
-4. **Monitor health** - Check /health secara berkala
-5. **Install Ollama** - Untuk AI features (optional tapi recommended)
-
----
-
-## 🎉 Feature Summary
+## Feature Summary
 
 | Feature | Status | Free? |
 |---------|--------|-------|
@@ -973,11 +792,10 @@ free -h
 | Futures trading | ✅ | ✅ |
 | Telegram control | ✅ | ✅ |
 | BotGuardian | ✅ | ✅ |
-| AI Analysis (Ollama) | ✅ | ✅ |
+| Multi-Provider AI | ✅ | ✅ |
+| Auto Alert | ✅ | ✅ |
 | Health monitoring | ✅ | ✅ |
-| Auto Git backup | ✅ | ✅ |
 | FreqAI (ML) | ✅ | ✅ |
-| Multi-timeframe | ✅ | ✅ |
 
 ---
 
